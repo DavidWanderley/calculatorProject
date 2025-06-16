@@ -10,12 +10,12 @@ class Calculator {
   }
 
   addDigit(digit) {
-    if (digit === "." && this.currentOperation.includes(".")) {
+    if (digit === "." && this.currentOperationsText.innerText.includes(".")) {
       return;
     }
 
-    this.currentOperation = digit;
-    this.updateScreen();
+    this.currentOperation += digit;
+    this.currentOperationsText.innerText = this.currentOperation;
   }
 
   processOperation(operation) {
@@ -59,7 +59,9 @@ class Calculator {
       case "=":
         this.processEqualOperator();
         break;
-
+      case "+/-":
+        this.toggleSign();
+        break;
       default:
         return;
     }
@@ -71,10 +73,8 @@ class Calculator {
     current = null,
     previous = null
   ) {
-    console.log(operationValue, operation, current, previous);
-
     if (operationValue === null) {
-      this.currentOperationsText.innerText += this.currentOperation;
+      return;
     } else {
       if (previous === 0) {
         operationValue = current;
@@ -82,6 +82,7 @@ class Calculator {
 
       this.previousOperationsText.innerText = `${operationValue} ${operation}`;
       this.currentOperationsText.innerText = "";
+      this.currentOperation = "";
     }
   }
 
@@ -114,6 +115,15 @@ class Calculator {
     const operation = previousOperationsText.innerText.split(" ")[1];
 
     this.processOperation(operation);
+  }
+
+  toggleSign() {
+    if (this.currentOperationsText.innerText !== "") {
+      let value = parseFloat(this.currentOperationsText.innerText);
+      value *= -1;
+      this.currentOperationsText.innerText = value.toString();
+      this.currentOperation = value.toString();
+    }
   }
 }
 
